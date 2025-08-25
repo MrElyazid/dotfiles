@@ -1,0 +1,383 @@
+-- ~/.config/nvim/lua/core/plugins.lua
+
+return {
+	-- THEME
+	{
+		"folke/tokyonight.nvim",
+		lazy = false, -- make sure we load this during startup
+		priority = 1000,
+		config = function()
+			-- load the colorscheme here
+			vim.cmd.colorscheme("tokyonight-storm")
+		end,
+	},
+
+
+	-- FILE EXPLORER
+
+	{
+		"nvim-tree/nvim-tree.lua",
+		dependecies = "nvim-tree/nvim-web-devicons",
+		config = function()
+			require("nvim-tree").setup({
+				-- options here
+			})
+			-- Add a keymap to toggle the file explorer
+			vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
+		end,
+
+	},
+
+	-- STATUSLINE
+
+	{
+		"nvim-lualine/lualine.nvim",
+		dependencies = {"nvim-tree/nvim-web-devicons" }, -- for icons in the status line
+		config = function()
+			require("lualine").setup({
+				options = {
+					theme = "tokyonight",
+				},
+			})
+			end,
+	},
+
+ -- LANGUAGE SERVER PROTOCOL
+  {
+    "williamboman/mason.nvim",
+    config = function()
+      require("mason").setup()
+    end,
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
+    config = function()
+      -- This function gets called for every language server that is attached
+      local on_attach = function(client, bufnr)
+        local keymap = vim.keymap
+        -- Keymaps for LSP features
+        keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr, desc = "LSP Hover" })
+        keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to Definition" })
+        keymap.set("n", "gr", vim.lsp.buf.references, { buffer = bufnr, desc = "Go to References" })
+        keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code Action" })
+            
+        -- Signature help keymaps (works in insert mode)
+        keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Show signature help" })
+        keymap.set("n", "<leader>s", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Show signature help" })
+      end
+
+      -- List of servers to install
+      local servers = {
+        "pyright",   -- Python
+        "gopls",     -- Go
+        "ts_ls",  -- Javascript/Typescript
+        "html",      -- HTML
+        "cssls",     -- CSS
+        "emmet_ls",  -- For HTML/CSS snippets (great for Django templates)
+        "lua_ls",    -- For our Neovim config
+      }
+
+      local lspconfig = require("lspconfig")
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+      require("mason-lspconfig").setup({
+        ensure_installed = servers,
+        handlers = {
+          -- Default handler for servers without special config
+          function(server_name)
+            lspconfig[server_name].setup({
+              on_attach = on_attach,
+              capabilities = capabilities,
+            })
+          end,
+
+          -- Custom setup for Pyright
+          ["pyright"] = function()
+            lspconfig.pyright.setup({
+              on_attach = on_attach,
+              capabilities = capabilities,
+              settings = {
+                python = {
+                  analysis = {
+                    autoSearchPaths = true,
+                    diagnosticMode = "openFilesOnly",
+                    useLibraryCodeForTypes = true
+                  }
+                }
+              }
+            })
+          end,
+
+          -- Custom setup for Gopls
+          ["gopls"] = function()
+            lspconfig.gopls.setup({
+              on_attach = on_attach,
+              capabilities = capabilities,
+              settings = {
+                gopls = {
+                  gofumpt = true, -- use gofumpt for formatting
+                },
+              },
+            })
+          end,
+        }
+      })
+    end,
+  },
+
+  -- AUTO-COMPLETION
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp", -- Source for LSP
+      "hrsh7th/cmp-buffer",   -- Source for text in current buffer
+      "hrsh7th/cmp-path",     -- Source for file system paths
+      "L3MON4D3/LuaSnip",     -- Snippet engine
+      "saadparwaiz1/cmp_luasnip", -- Source for snippets
+    },
+    config = function()
+      local cmp = require("cmp")
+      local luasnip = require("luasnip")
+
+      cmp.setup({
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
+        mapping = cmp.mapping.preset.insert({
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<CR>"] = cmp.mapping(function(fallback)
+              if cmp.visible() then
+                  if cmp.get_selected_entry() then
+                      cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }) -- Accept the selected item
+                  else
+                      fallback() -- Go to a new line if no entry is selected
+                  end
+              else
+                  fallback() -- Always fallback to default <CR> behavior
+              end
+          end, { "i", "s" }),
+          
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          
+        }),
+        sources = cmp.config.sources({
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+          { name = "buffer" },
+          { name = "path" },
+        }),
+      })
+
+      -- Integration with nvim-autopairs
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      local cmp = require("cmp")
+      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      
+    end,
+  },
+
+  -- COMMENTING
+  {
+    "numToStr/Comment.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" }, -- Optional: for enhanced commenting with TS
+    config = function()
+      require("Comment").setup({
+        -- You can configure Comment.nvim here if needed
+        -- For example, to change the keymap:
+        -- toggler = {
+        --   line = '<leader>cc',  -- Toggle comment for current line
+        --   block = '<leader>cb', -- Toggle comment for block
+        -- },
+        -- opleader = {
+        --   line = '<leader>c',   -- Operator-pending mode for line comment
+        --   block = '<leader>b',  -- Operator-pending mode for block comment
+        -- },
+      })
+      
+
+      vim.keymap.set("n", "<leader>c", "<Plug>(comment_toggle_linewise_current)", { desc = "Toggle comment for current line" })
+      vim.keymap.set("v", "<leader>c", "<Plug>(comment_toggle_linewise_visual)", { desc = "Toggle comment for visual selection" })
+      
+    end,
+  },
+
+  -- AUTO-PAIRS
+  {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    config = function()
+      require("nvim-autopairs").setup({
+      	disable_filetype = { "TelescopePrompt", "vim" }, -- Disable in specific filetypes
+ 		check_ts = false, -- Use treesitter to check for proper syntax (optional)
+ 		fast_wrap = {}, -- Enable fast wrapping using a shortcut
+      })
+    end,
+  },
+
+  -- TREESITTER (Better Syntax Highlighting & Code Understanding)
+  {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = {
+          "python",
+          "javascript",
+          "typescript",
+          "html",
+          "css",
+          "go",
+          "lua",
+          "json",
+          "yaml",
+          "markdown",
+          "markdown_inline", -- Required for render-markdown.nvim
+        },
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = false,
+        },
+        indent = {
+          enable = true,
+        },
+      })
+    end,
+  },
+
+  -- TELESCOPE (Fuzzy Finder)
+  {
+    "nvim-telescope/telescope.nvim",
+    tag = "0.1.8",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("telescope").setup({
+        defaults = {
+          -- Default configuration for telescope goes here
+          mappings = {
+            i = {
+              -- Insert mode mappings
+              ["<C-u>"] = false,
+              ["<C-d>"] = false,
+            },
+          },
+        },
+      })
+      
+      -- Keymaps for Telescope
+      local builtin = require("telescope.builtin")
+      vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
+      vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Live grep" })
+      vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffers" })
+      vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Find help" })
+      vim.keymap.set("n", "<leader>fr", builtin.oldfiles, { desc = "Find recent files" })
+    end,
+  },
+
+  -- MARKDOWN RENDERING
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { 
+      "nvim-treesitter/nvim-treesitter", 
+      "nvim-tree/nvim-web-devicons" -- You already have this for icons
+    },
+    ft = { "markdown" }, -- Lazy load only for markdown files
+    config = function()
+      require("render-markdown").setup({
+        -- Enable by default (you can toggle it off/on as needed)
+        enabled = true,
+        -- File types to enable rendering for
+        file_types = { "markdown" },
+        -- Enable completions (works with your existing nvim-cmp setup)
+        completions = {
+          lsp = { enabled = true }
+        },
+        -- Configure headings with different background colors
+        heading = {
+          enabled = true,
+          sign = true,
+          icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+        },
+        -- Code block configuration
+        code = {
+          enabled = true,
+          sign = true,
+          style = "full", -- full, normal, language, none
+          border = "thin", -- thick, thin
+        },
+        -- List bullets
+        bullet = {
+          enabled = true,
+          icons = { "●", "○", "◆", "◇" },
+        },
+        -- Checkboxes
+        checkbox = {
+          enabled = true,
+          checked = { icon = "󰄬 " },
+          unchecked = { icon = "󰄭 " },
+        },
+        -- Tables
+        pipe_table = {
+          enabled = true,
+          style = "full", -- full, normal, none
+        },
+        -- Callouts (like GitHub/Obsidian)
+        callout = {
+          note = { raw = "[!NOTE]", rendered = "󰋽 Note", highlight = "RenderMarkdownInfo" },
+          tip = { raw = "[!TIP]", rendered = "󰌶 Tip", highlight = "RenderMarkdownSuccess" },
+          important = { raw = "[!IMPORTANT]", rendered = "󰅾 Important", highlight = "RenderMarkdownHint" },
+          warning = { raw = "[!WARNING]", rendered = "󰀪 Warning", highlight = "RenderMarkdownWarn" },
+          caution = { raw = "[!CAUTION]", rendered = "󰳦 Caution", highlight = "RenderMarkdownError" },
+        },
+      })
+      
+      -- Keymaps for markdown rendering
+      local keymap = vim.keymap
+      
+      -- Toggle markdown rendering globally
+      keymap.set("n", "<leader>mt", "<cmd>RenderMarkdown toggle<CR>", { desc = "Toggle markdown rendering" })
+      
+      -- Toggle markdown rendering for current buffer only
+      keymap.set("n", "<leader>mb", "<cmd>RenderMarkdown buf_toggle<CR>", { desc = "Toggle markdown rendering (buffer)" })
+      
+      -- Enable markdown rendering
+      keymap.set("n", "<leader>me", "<cmd>RenderMarkdown enable<CR>", { desc = "Enable markdown rendering" })
+      
+      -- Disable markdown rendering
+      keymap.set("n", "<leader>md", "<cmd>RenderMarkdown disable<CR>", { desc = "Disable markdown rendering" })
+      
+      -- Expand anti-conceal margins (useful when editing)
+      keymap.set("n", "<leader>m+", "<cmd>RenderMarkdown expand<CR>", { desc = "Expand markdown margins" })
+      
+      -- Contract anti-conceal margins 
+      keymap.set("n", "<leader>m-", "<cmd>RenderMarkdown contract<CR>", { desc = "Contract markdown margins" })
+      
+      -- Show markdown config differences
+      keymap.set("n", "<leader>mc", "<cmd>RenderMarkdown config<CR>", { desc = "Show markdown config" })
+      
+      -- Debug markdown rendering on current line
+      keymap.set("n", "<leader>mx", "<cmd>RenderMarkdown debug<CR>", { desc = "Debug markdown rendering" })
+      
+    end,
+  },
+
+}
