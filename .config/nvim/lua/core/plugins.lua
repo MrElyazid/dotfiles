@@ -15,9 +15,10 @@ return {
 
 	-- FILE EXPLORER
 
+	-- FILE EXPLORER
 	{
 		"nvim-tree/nvim-tree.lua",
-		dependecies = "nvim-tree/nvim-web-devicons",
+		dependencies = "nvim-tree/nvim-web-devicons",
 		config = function()
 			require("nvim-tree").setup({
 				-- options here
@@ -25,8 +26,8 @@ return {
 			-- Add a keymap to toggle the file explorer
 			vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
 		end,
-
 	},
+
 
 	-- STATUSLINE
 
@@ -61,9 +62,7 @@ return {
         keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to Definition" })
         keymap.set("n", "gr", vim.lsp.buf.references, { buffer = bufnr, desc = "Go to References" })
         keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code Action" })
-            
-        -- Signature help keymaps (works in insert mode)
-        keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Show signature help" })
+        -- Signature help keymaps
         keymap.set("n", "<leader>s", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Show signature help" })
       end
 
@@ -71,10 +70,7 @@ return {
       local servers = {
         "pyright",   -- Python
         "gopls",     -- Go
-        "ts_ls",  -- Javascript/Typescript
-        "html",      -- HTML
-        "cssls",     -- CSS
-        "emmet_ls",  -- For HTML/CSS snippets (great for Django templates)
+        "bashls",    -- Bash
         "lua_ls",    -- For our Neovim config
       }
 
@@ -159,7 +155,7 @@ return {
                   fallback() -- Always fallback to default <CR> behavior
               end
           end, { "i", "s" }),
-          
+
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
@@ -178,7 +174,7 @@ return {
               fallback()
             end
           end, { "i", "s" }),
-          
+
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
@@ -192,7 +188,7 @@ return {
       local cmp_autopairs = require("nvim-autopairs.completion.cmp")
       local cmp = require("cmp")
       cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-      
+
     end,
   },
 
@@ -213,11 +209,11 @@ return {
         --   block = '<leader>b',  -- Operator-pending mode for block comment
         -- },
       })
-      
+ 
 
       vim.keymap.set("n", "<leader>c", "<Plug>(comment_toggle_linewise_current)", { desc = "Toggle comment for current line" })
       vim.keymap.set("v", "<leader>c", "<Plug>(comment_toggle_linewise_visual)", { desc = "Toggle comment for visual selection" })
-      
+
     end,
   },
 
@@ -242,16 +238,12 @@ return {
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
           "python",
-          "javascript",
-          "typescript",
-          "html",
-          "css",
           "go",
+          "bash",
           "lua",
           "json",
           "yaml",
           "markdown",
-          "markdown_inline", -- Required for render-markdown.nvim
         },
         highlight = {
           enable = true,
@@ -282,7 +274,7 @@ return {
           },
         },
       })
-      
+ 
       -- Keymaps for Telescope
       local builtin = require("telescope.builtin")
       vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
@@ -290,93 +282,6 @@ return {
       vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffers" })
       vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Find help" })
       vim.keymap.set("n", "<leader>fr", builtin.oldfiles, { desc = "Find recent files" })
-    end,
-  },
-
-  -- MARKDOWN RENDERING
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    dependencies = { 
-      "nvim-treesitter/nvim-treesitter", 
-      "nvim-tree/nvim-web-devicons" -- You already have this for icons
-    },
-    ft = { "markdown" }, -- Lazy load only for markdown files
-    config = function()
-      require("render-markdown").setup({
-        -- Enable by default (you can toggle it off/on as needed)
-        enabled = true,
-        -- File types to enable rendering for
-        file_types = { "markdown" },
-        -- Enable completions (works with your existing nvim-cmp setup)
-        completions = {
-          lsp = { enabled = true }
-        },
-        -- Configure headings with different background colors
-        heading = {
-          enabled = true,
-          sign = true,
-          icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
-        },
-        -- Code block configuration
-        code = {
-          enabled = true,
-          sign = true,
-          style = "full", -- full, normal, language, none
-          border = "thin", -- thick, thin
-        },
-        -- List bullets
-        bullet = {
-          enabled = true,
-          icons = { "●", "○", "◆", "◇" },
-        },
-        -- Checkboxes
-        checkbox = {
-          enabled = true,
-          checked = { icon = "󰄬 " },
-          unchecked = { icon = "󰄭 " },
-        },
-        -- Tables
-        pipe_table = {
-          enabled = true,
-          style = "full", -- full, normal, none
-        },
-        -- Callouts (like GitHub/Obsidian)
-        callout = {
-          note = { raw = "[!NOTE]", rendered = "󰋽 Note", highlight = "RenderMarkdownInfo" },
-          tip = { raw = "[!TIP]", rendered = "󰌶 Tip", highlight = "RenderMarkdownSuccess" },
-          important = { raw = "[!IMPORTANT]", rendered = "󰅾 Important", highlight = "RenderMarkdownHint" },
-          warning = { raw = "[!WARNING]", rendered = "󰀪 Warning", highlight = "RenderMarkdownWarn" },
-          caution = { raw = "[!CAUTION]", rendered = "󰳦 Caution", highlight = "RenderMarkdownError" },
-        },
-      })
-      
-      -- Keymaps for markdown rendering
-      local keymap = vim.keymap
-      
-      -- Toggle markdown rendering globally
-      keymap.set("n", "<leader>mt", "<cmd>RenderMarkdown toggle<CR>", { desc = "Toggle markdown rendering" })
-      
-      -- Toggle markdown rendering for current buffer only
-      keymap.set("n", "<leader>mb", "<cmd>RenderMarkdown buf_toggle<CR>", { desc = "Toggle markdown rendering (buffer)" })
-      
-      -- Enable markdown rendering
-      keymap.set("n", "<leader>me", "<cmd>RenderMarkdown enable<CR>", { desc = "Enable markdown rendering" })
-      
-      -- Disable markdown rendering
-      keymap.set("n", "<leader>md", "<cmd>RenderMarkdown disable<CR>", { desc = "Disable markdown rendering" })
-      
-      -- Expand anti-conceal margins (useful when editing)
-      keymap.set("n", "<leader>m+", "<cmd>RenderMarkdown expand<CR>", { desc = "Expand markdown margins" })
-      
-      -- Contract anti-conceal margins 
-      keymap.set("n", "<leader>m-", "<cmd>RenderMarkdown contract<CR>", { desc = "Contract markdown margins" })
-      
-      -- Show markdown config differences
-      keymap.set("n", "<leader>mc", "<cmd>RenderMarkdown config<CR>", { desc = "Show markdown config" })
-      
-      -- Debug markdown rendering on current line
-      keymap.set("n", "<leader>mx", "<cmd>RenderMarkdown debug<CR>", { desc = "Debug markdown rendering" })
-      
     end,
   },
 

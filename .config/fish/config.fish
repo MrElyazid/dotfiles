@@ -9,11 +9,12 @@ end
 
 set -g fish_greeting
 
+set -x BROWSER firefox
+set -x EDITOR nvim
+set -x VISUAL nvim
+set -x GOPATH $HOME/go
 
-# Enable Vi keybindings
-fish_vi_key_bindings
-
-bind -M insert \cf 'forward-char' # ctrl-f for autocomplete
+bind -M default \cf 'forward-char' # ctrl-f for autocomplete
 
 # dotfiles alias
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'

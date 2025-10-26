@@ -29,6 +29,20 @@ style = { shape = "Block", blinking = "On" }
 unfocused_hollow = true
 
 
+[window]
+opacity = 1.0
+padding = { x = 5, y = 5 }
+dynamic_title = true
+
+[window.dimensions]
+columns = 120
+lines = 35
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+
 # Theme: Tokyo Night Storm
 [colors.primary]
 background = '#1a1b26'
