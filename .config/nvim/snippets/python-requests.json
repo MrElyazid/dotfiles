@@ -1,0 +1,67 @@
+{
+  "requests get": {
+    "prefix": "reqget",
+    "body": [
+      "import requests",
+      "",
+      "response = requests.get(${1:'https://api.example.com'})",
+      "response.raise_for_status()",
+      "${2:data} = response.json()"
+    ],
+    "description": "HTTP GET request with JSON"
+  },
+  "requests get text": {
+    "prefix": "reqgettext",
+    "body": [
+      "import requests",
+      "",
+      "response = requests.get(${1:'https://example.com'})",
+      "response.raise_for_status()",
+      "${2:html} = response.text"
+    ],
+    "description": "HTTP GET request for HTML/text"
+  },
+  "requests post": {
+    "prefix": "reqpost",
+    "body": [
+      "import requests",
+      "",
+      "response = requests.post(",
+      "    ${1:'https://api.example.com'},",
+      "    json=${2:data}",
+      ")",
+      "response.raise_for_status()",
+      "${3:result} = response.json()"
+    ],
+    "description": "HTTP POST request"
+  },
+  "requests with headers": {
+    "prefix": "reqheaders",
+    "body": [
+      "import requests",
+      "",
+      "headers = {",
+      "    'User-Agent': 'Mozilla/5.0',",
+      "    ${1:'Authorization': 'Bearer token'}",
+      "}",
+      "response = requests.get(${2:'https://api.example.com'}, headers=headers)",
+      "response.raise_for_status()",
+      "${3:data} = response.json()"
+    ],
+    "description": "Request with custom headers"
+  },
+  "download file": {
+    "prefix": "download",
+    "body": [
+      "import requests",
+      "",
+      "response = requests.get(${1:'https://example.com/file.pdf'}, stream=True)",
+      "response.raise_for_status()",
+      "",
+      "with open(${2:'file.pdf'}, 'wb') as f:",
+      "    for chunk in response.iter_content(chunk_size=8192):",
+      "        f.write(chunk)"
+    ],
+    "description": "Download file with progress"
+  }
+}

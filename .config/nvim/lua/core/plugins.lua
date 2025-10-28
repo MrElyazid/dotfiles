@@ -14,8 +14,6 @@ return {
 
 
 	-- FILE EXPLORER
-
-	-- FILE EXPLORER
 	{
 		"nvim-tree/nvim-tree.lua",
 		dependencies = "nvim-tree/nvim-web-devicons",
@@ -61,9 +59,6 @@ return {
         keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr, desc = "LSP Hover" })
         keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to Definition" })
         keymap.set("n", "gr", vim.lsp.buf.references, { buffer = bufnr, desc = "Go to References" })
-        keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr, desc = "Code Action" })
-        -- Signature help keymaps
-        keymap.set("n", "<leader>s", vim.lsp.buf.signature_help, { buffer = bufnr, desc = "Show signature help" })
       end
 
       -- List of servers to install
@@ -136,6 +131,9 @@ return {
       local cmp = require("cmp")
       local luasnip = require("luasnip")
 
+      -- Load custom VSCode-style snippets
+      require("luasnip.loaders.from_vscode").lazy_load({ paths = { vim.fn.stdpath("config") .. "/snippets" } })
+
       cmp.setup({
         snippet = {
           expand = function(args)
@@ -186,7 +184,6 @@ return {
 
       -- Integration with nvim-autopairs
       local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-      local cmp = require("cmp")
       cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
     end,
@@ -198,18 +195,8 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter" }, -- Optional: for enhanced commenting with TS
     config = function()
       require("Comment").setup({
-        -- You can configure Comment.nvim here if needed
-        -- For example, to change the keymap:
-        -- toggler = {
-        --   line = '<leader>cc',  -- Toggle comment for current line
-        --   block = '<leader>cb', -- Toggle comment for block
-        -- },
-        -- opleader = {
-        --   line = '<leader>c',   -- Operator-pending mode for line comment
-        --   block = '<leader>b',  -- Operator-pending mode for block comment
-        -- },
+       -- },
       })
- 
 
       vim.keymap.set("n", "<leader>c", "<Plug>(comment_toggle_linewise_current)", { desc = "Toggle comment for current line" })
       vim.keymap.set("v", "<leader>c", "<Plug>(comment_toggle_linewise_visual)", { desc = "Toggle comment for visual selection" })
@@ -234,6 +221,9 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
+    dependencies = {
+      "HiPhish/rainbow-delimiters.nvim", -- Colorize matching brackets
+    },
     config = function()
       require("nvim-treesitter.configs").setup({
         ensure_installed = {
@@ -251,6 +241,28 @@ return {
         },
         indent = {
           enable = true,
+        },
+      })
+      
+      -- Rainbow delimiters setup
+      local rainbow_delimiters = require("rainbow-delimiters")
+      require("rainbow-delimiters.setup").setup({
+        strategy = {
+          [''] = rainbow_delimiters.strategy['global'],
+          vim = rainbow_delimiters.strategy['local'],
+        },
+        query = {
+          [''] = 'rainbow-delimiters',
+          lua = 'rainbow-blocks',
+        },
+        highlight = {
+          'RainbowDelimiterRed',
+          'RainbowDelimiterYellow',
+          'RainbowDelimiterBlue',
+          'RainbowDelimiterOrange',
+          'RainbowDelimiterGreen',
+          'RainbowDelimiterViolet',
+          'RainbowDelimiterCyan',
         },
       })
     end,
@@ -274,7 +286,7 @@ return {
           },
         },
       })
- 
+
       -- Keymaps for Telescope
       local builtin = require("telescope.builtin")
       vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })

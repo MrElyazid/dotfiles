@@ -1,0 +1,28 @@
+{
+  "beautifulsoup parse": {
+    "prefix": "bs4",
+    "body": [
+      "from bs4 import BeautifulSoup",
+      "import requests",
+      "",
+      "response = requests.get(${1:'https://example.com'})",
+      "soup = BeautifulSoup(response.text, 'html.parser')",
+      "${2:# soup.find(), soup.select(), etc.}"
+    ],
+    "description": "BeautifulSoup basic setup"
+  },
+  "beautifulsoup find": {
+    "prefix": "bs4find",
+    "body": [
+      "${1:elements} = soup.find_all(${2:'div'}, class_=${3:'classname'})"
+    ],
+    "description": "BeautifulSoup find elements"
+  },
+  "beautifulsoup select": {
+    "prefix": "bs4select",
+    "body": [
+      "${1:elements} = soup.select(${2:'div.classname'})"
+    ],
+    "description": "BeautifulSoup CSS selector"
+  }
+}

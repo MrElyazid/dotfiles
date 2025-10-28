@@ -1,0 +1,63 @@
+{
+  "json load": {
+    "prefix": "jsonload",
+    "body": [
+      "import json",
+      "",
+      "with open(${1:'data.json'}, 'r', encoding='utf-8') as f:",
+      "    ${2:data} = json.load(f)"
+    ],
+    "description": "Load JSON from file"
+  },
+  "json dump": {
+    "prefix": "jsondump",
+    "body": [
+      "import json",
+      "",
+      "with open(${1:'data.json'}, 'w', encoding='utf-8') as f:",
+      "    json.dump(${2:data}, f, indent=2, ensure_ascii=False)"
+    ],
+    "description": "Write JSON to file"
+  },
+  "json loads": {
+    "prefix": "jsonloads",
+    "body": [
+      "import json",
+      "",
+      "${1:data} = json.loads(${2:json_string})"
+    ],
+    "description": "Parse JSON string"
+  },
+  "json dumps": {
+    "prefix": "jsondumps",
+    "body": [
+      "import json",
+      "",
+      "${1:json_str} = json.dumps(${2:data}, indent=2, ensure_ascii=False)"
+    ],
+    "description": "Convert to JSON string"
+  },
+  "csv read": {
+    "prefix": "csvread",
+    "body": [
+      "import csv",
+      "",
+      "with open(${1:'data.csv'}, 'r', encoding='utf-8') as f:",
+      "    reader = csv.DictReader(f)",
+      "    ${2:data} = list(reader)"
+    ],
+    "description": "Read CSV as dict"
+  },
+  "csv write": {
+    "prefix": "csvwrite",
+    "body": [
+      "import csv",
+      "",
+      "with open(${1:'data.csv'}, 'w', encoding='utf-8', newline='') as f:",
+      "    writer = csv.DictWriter(f, fieldnames=${2:['col1', 'col2']})",
+      "    writer.writeheader()",
+      "    writer.writerows(${3:data})"
+    ],
+    "description": "Write CSV from dict"
+  }
+}

@@ -1,9 +1,4 @@
 
--- a global variable for the path of the core config
-
-local core_path = vim.fn.stdpath("config") .. "/lua/core/"
-
-
 -- LAZY.NVIM BOOTSTRAP
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then

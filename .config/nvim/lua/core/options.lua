@@ -1,7 +1,7 @@
 -- ~/.config/nvim/lua/core/options.lua
 
--- Set space as athe leader key
--- THis must be set before plugins are loaded
+-- Set space as the leader key
+-- This must be set before plugins are loaded
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -9,8 +9,9 @@ vim.g.maplocalleader = " "
 local opt = vim.opt -- for concisness
 
 
--- FISH SHELL
-opt.shell = "/usr/bin/fish"
+-- Shell configuration
+-- Use bash for Nvim internal commands (plugin compatibility)
+opt.shell = "/bin/bash"
 
 
 -- Line numbers
@@ -20,7 +21,6 @@ opt.number = true
 
 -- Tabs and Indentation
 -- Python uses 4 spaces (PEP 8), Go uses tabs
--- These are defaults; we'll set per-language settings via autocmds below
 
 opt.tabstop = 4
 opt.shiftwidth = 4
@@ -45,8 +45,8 @@ opt.showmode = false
 
 opt.clipboard = "unnamedplus"  -- Sync with system clipboard
 opt.scrolloff = 8              -- Keep 8 lines visible above/below cursor
-opt.updatetime = 250           -- Faster completion and diagnostics
-opt.timeoutlen = 300           -- Faster key sequence timeout
+opt.updatetime = 250
+opt.timeoutlen = 300
 
 -- Language-specific indentation
 vim.api.nvim_create_autocmd("FileType", {
@@ -86,15 +86,14 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Delete to blackhole register (don't affect clipboard)
--- This keeps clipboard intact when you delete, so you can paste what you copied earlier
 vim.keymap.set({'n', 'v'}, 'd', '"_d', { noremap = true, desc = "Delete to blackhole" })
 vim.keymap.set({'n', 'v'}, 'D', '"_D', { noremap = true, desc = "Delete to end of line (blackhole)" })
 
--- Change also goes to blackhole (since it's delete + insert)
+-- Change also goes to blackhole (cuz it's delete + insert)
 vim.keymap.set({'n', 'v'}, 'c', '"_c', { noremap = true, desc = "Change to blackhole" })
 vim.keymap.set({'n', 'v'}, 'C', '"_C', { noremap = true, desc = "Change to end of line (blackhole)" })
 
--- Note: x (cut), y (yank) still use the normal clipboard via unnamedplus
+-- x (cut), y (yank) still use the normal clipboard via unnamedplus
 
 -- Toggle relative numbers on and off
 vim.keymap.set('n', '<leader>n', function()

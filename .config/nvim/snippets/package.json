@@ -1,0 +1,31 @@
+{
+  "name": "snipper",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "python",
+        "path": "./python-basic.json"
+      },
+      {
+        "language": "python",
+        "path": "./python-files.json"
+      },
+      {
+        "language": "python",
+        "path": "./python-data.json"
+      },
+      {
+        "language": "python",
+        "path": "./python-requests.json"
+      },
+      {
+        "language": "python",
+        "path": "./python-scraping.json"
+      },
+      {
+        "language": "python",
+        "path": "./python-automation.json"
+      }
+    ]
+  }
+}

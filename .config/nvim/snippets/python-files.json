@@ -1,0 +1,56 @@
+{
+  "read file": {
+    "prefix": "readfile",
+    "body": [
+      "with open(${1:'file.txt'}, 'r', encoding='utf-8') as f:",
+      "    ${2:content} = f.read()"
+    ],
+    "description": "Read entire file"
+  },
+  "read file lines": {
+    "prefix": "readlines",
+    "body": [
+      "with open(${1:'file.txt'}, 'r', encoding='utf-8') as f:",
+      "    ${2:lines} = f.readlines()"
+    ],
+    "description": "Read file lines"
+  },
+  "write file": {
+    "prefix": "writefile",
+    "body": [
+      "with open(${1:'file.txt'}, 'w', encoding='utf-8') as f:",
+      "    f.write(${2:content})"
+    ],
+    "description": "Write to file"
+  },
+  "append file": {
+    "prefix": "appendfile",
+    "body": [
+      "with open(${1:'file.txt'}, 'a', encoding='utf-8') as f:",
+      "    f.write(${2:content})"
+    ],
+    "description": "Append to file"
+  },
+  "glob files": {
+    "prefix": "glob",
+    "body": [
+      "from pathlib import Path",
+      "",
+      "files = Path(${1:'.'}).glob(${2:'*.txt'})",
+      "for file in files:",
+      "    ${3:print(file)}"
+    ],
+    "description": "Glob pattern matching for files"
+  },
+  "walk directory": {
+    "prefix": "walkdir",
+    "body": [
+      "from pathlib import Path",
+      "",
+      "for path in Path(${1:'.'}).rglob(${2:'*'}):",
+      "    if path.is_file():",
+      "        ${3:print(path)}"
+    ],
+    "description": "Recursively walk directory"
+  }
+}

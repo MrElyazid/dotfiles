@@ -1,0 +1,85 @@
+{
+  "function with docstring": {
+    "prefix": "deff",
+    "body": [
+      "def ${1:function_name}(${2:args}):",
+      "    \"\"\"${3:Description}\"\"\"",
+      "    ${4:pass}"
+    ],
+    "description": "Function with docstring"
+  },
+  "class": {
+    "prefix": "class",
+    "body": [
+      "class ${1:ClassName}:",
+      "    def __init__(self${2:, args}):",
+      "        ${3:pass}"
+    ],
+    "description": "Define a class"
+  },
+  "list comprehension": {
+    "prefix": "lc",
+    "body": [
+      "[${1:item} for ${1:item} in ${2:items}]"
+    ],
+    "description": "List comprehension"
+  },
+  "dict comprehension": {
+    "prefix": "dc",
+    "body": [
+      "{${1:key}: ${2:value} for ${1:key}, ${2:value} in ${3:items}}"
+    ],
+    "description": "Dictionary comprehension"
+  },
+  "property": {
+    "prefix": "prop",
+    "body": [
+      "@property",
+      "def ${1:name}(self):",
+      "    return self._${1:name}"
+    ],
+    "description": "Property decorator"
+  },
+  "main function": {
+    "prefix": "main",
+    "body": [
+      "def main():",
+      "    ${1:pass}",
+      "",
+      "",
+      "if __name__ == '__main__':",
+      "    main()"
+    ],
+    "description": "Main function with if __name__ block"
+  },
+  "argparse basic": {
+    "prefix": "argparse",
+    "body": [
+      "import argparse",
+      "",
+      "parser = argparse.ArgumentParser(description='${1:Description}')",
+      "parser.add_argument('${2:name}', help='${3:Help text}')",
+      "args = parser.parse_args()",
+      "${4:# Use args.name}"
+    ],
+    "description": "Basic argparse setup"
+  },
+  "pathlib": {
+    "prefix": "pathlib",
+    "body": [
+      "from pathlib import Path",
+      "",
+      "${1:path} = Path(${2:'file.txt'})"
+    ],
+    "description": "Pathlib import and usage"
+  },
+  "parse datetime": {
+    "prefix": "datetime",
+    "body": [
+      "from datetime import datetime",
+      "",
+      "${1:dt} = datetime.strptime(${2:'2024-01-01'}, ${3:'%Y-%m-%d'})"
+    ],
+    "description": "Parse datetime string"
+  }
+}
