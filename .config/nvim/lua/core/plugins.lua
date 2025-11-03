@@ -4,10 +4,10 @@ return {
 	-- THEME
 	{
 		"folke/tokyonight.nvim",
-		lazy = false, -- make sure we load this during startup
+		lazy = false,
 		priority = 1000,
 		config = function()
-			-- load the colorscheme here
+			-- load the colorscheme
 			vim.cmd.colorscheme("tokyonight-storm")
 		end,
 	},
@@ -21,7 +21,7 @@ return {
 			require("nvim-tree").setup({
 				-- options here
 			})
-			-- Add a keymap to toggle the file explorer
+			-- keymap to toggle the file explorer
 			vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
 		end,
 	},
@@ -217,7 +217,7 @@ return {
     end,
   },
 
-  -- TREESITTER (Better Syntax Highlighting & Code Understanding)
+  -- TREESITTER
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
@@ -243,7 +243,7 @@ return {
           enable = true,
         },
       })
-      
+
       -- Rainbow delimiters setup
       local rainbow_delimiters = require("rainbow-delimiters")
       require("rainbow-delimiters.setup").setup({
@@ -295,6 +295,31 @@ return {
       vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Find help" })
       vim.keymap.set("n", "<leader>fr", builtin.oldfiles, { desc = "Find recent files" })
     end,
+  },
+
+  -- WHICH-KEY
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("which-key").setup({})
+    end,
+  },
+
+  -- TROUBLE
+  {
+    "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    cmd = "Trouble",
+    config = function()
+      require("trouble").setup({})
+    end,
+    keys = {
+      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
+      { "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics" },
+      { "<leader>xl", "<cmd>Trouble loclist toggle<cr>", desc = "Location List" },
+      { "<leader>xq", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List" },
+    },
   },
 
 }

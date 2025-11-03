@@ -47,6 +47,7 @@ opt.clipboard = "unnamedplus"  -- Sync with system clipboard
 opt.scrolloff = 8              -- Keep 8 lines visible above/below cursor
 opt.updatetime = 250
 opt.timeoutlen = 300
+opt.autoread = true            -- Auto reload files changed outside of Neovim
 
 -- Language-specific indentation
 vim.api.nvim_create_autocmd("FileType", {

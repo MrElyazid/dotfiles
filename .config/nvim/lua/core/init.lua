@@ -5,7 +5,6 @@ require("core.options")
 require("core.keymaps")
 
 -- setup lazy.nvim
-
 require("lazy").setup({
 	spec = {
 		-- All our plugins will go in this file
@@ -13,3 +12,5 @@ require("lazy").setup({
 },
 	-- configure any other lazy.nvim options here
 })
+
+

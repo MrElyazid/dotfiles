@@ -14,6 +14,8 @@ set -x EDITOR nvim
 set -x VISUAL nvim
 set -x GOPATH $HOME/go
 
+
+fish_default_key_bindings
 bind -M default \cf 'forward-char' # ctrl-f for autocomplete
 
 # dotfiles alias

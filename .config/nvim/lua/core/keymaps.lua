@@ -7,6 +7,7 @@ local keymap = vim.keymap
 
 -- clear search highlights
 
+
 keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
 
 
