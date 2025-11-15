@@ -297,6 +297,46 @@ return {
     end,
   },
 
+  -- GITHUB COPILOT
+  {
+    "github/copilot.vim",
+    lazy = false,
+    config = function()
+      -- Disable default Tab mapping
+      vim.g.copilot_no_tab_map = true
+      vim.g.copilot_assume_mapped = true
+      vim.g.copilot_filetypes = {
+        ["*"] = true,
+      }
+      
+      -- Ctrl+y: Accept suggestion
+      vim.keymap.set("i", "<C-y>", 'copilot#Accept("\\<CR>")', {
+        expr = true,
+        replace_keycodes = false,
+        silent = true,
+        desc = "Accept Copilot suggestion",
+      })
+      
+      -- Ctrl+e: Dismiss suggestion  
+      vim.keymap.set("i", "<C-e>", "<Plug>(copilot-dismiss)", {
+        silent = true,
+        desc = "Dismiss Copilot suggestion",
+      })
+      
+      -- Ctrl+x Ctrl+n: Next suggestion
+      vim.keymap.set("i", "<C-x><C-n>", "<Plug>(copilot-next)", {
+        silent = true,
+        desc = "Next Copilot suggestion",
+      })
+      
+      -- Ctrl+x Ctrl+p: Previous suggestion
+      vim.keymap.set("i", "<C-x><C-p>", "<Plug>(copilot-previous)", {
+        silent = true,
+        desc = "Previous Copilot suggestion",
+      })
+    end,
+  },
+
   -- WHICH-KEY
   {
     "folke/which-key.nvim",

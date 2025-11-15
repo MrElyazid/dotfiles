@@ -4,6 +4,7 @@ if status is-interactive
     fish_add_path ~/Applications/bin
     fish_add_path /usr/local/go/bin # go binaries
     fish_add_path $HOME/go/bin # go binaries
+    fish_add_path /opt/exercism/
 end
 
 

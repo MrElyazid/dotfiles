@@ -19,6 +19,11 @@ opt.shell = "/bin/bash"
 opt.relativenumber = true
 opt.number = true
 
+
+-- watch out!! swapfile is disabled 
+opt.swapfile = false
+
+
 -- Tabs and Indentation
 -- Python uses 4 spaces (PEP 8), Go uses tabs
 
