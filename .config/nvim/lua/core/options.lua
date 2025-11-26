@@ -82,6 +82,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "sh",
   callback = function()
@@ -90,6 +91,49 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.expandtab = true
   end,
 })
+
+vim.api.nvim_create_autocmd("BufWritePost", {
+  group = vim.api.nvim_create_augroup("AutoPlantUML", { clear = true }),
+  pattern = { "*.puml", "*.plantuml", "*.iuml" },
+  callback = function()
+    local file = vim.fn.expand("%:p")
+    local jar_path = vim.fn.expand("/home/elyazid/Applications/jars/plantuml-1.2025.10.jar")
+    
+    -- Structure the command as: java -jar /path/to/jar file
+    vim.fn.jobstart({"java", "-jar", jar_path, file}, { detach = true })
+  end,
+})
+
+
+
+-- latex support
+-- Function to compile the LaTeX document using latexmk
+local function compile_latex()
+  -- Use latexmk for robust, multi-pass compilation.
+  -- -pdf: forces PDF output.
+  -- -silent: suppresses most informational output.
+  -- %: Neovim's variable for the current buffer's filename.
+  local cmd = 'latexmk -pdf -silent %'
+
+  -- Execute the command silently (!). 
+  -- Redirect stdout and stderr to /dev/null to keep the editor clean.
+  vim.cmd('silent !' .. cmd .. ' > /dev/null 2>&1')
+end
+
+-- Create a named Autocmd Group to keep things organized and ensure clarity.
+vim.api.nvim_create_autocmd('BufWritePost', {
+  -- Group name
+  group = vim.api.nvim_create_augroup('SimpleLatexCompile', { clear = true }),
+  -- Only trigger for filetype 'tex'
+  pattern = { '*.tex' },
+  -- Execute the Lua function when the buffer is written/saved
+  callback = compile_latex,
+})
+
+
+
+
+
 
 -- Delete to blackhole register (don't affect clipboard)
 vim.keymap.set({'n', 'v'}, 'd', '"_d', { noremap = true, desc = "Delete to blackhole" })
