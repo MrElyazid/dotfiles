@@ -1,0 +1,14 @@
+#!/bin/bash
+
+clear_opt=" Clear History"
+
+history=$(greenclip print)
+
+chosen=$(echo -e "$clear_opt\n$history" | rofi -dmenu -i -p "Clipboard" -format s)
+
+if [[ "$chosen" == "$clear_opt" ]]; then
+    greenclip clear
+    notify-send "Clipboard" "History cleared"
+elif [[ -n "$chosen" ]]; then
+    echo -n "$chosen" | xclip -selection clipboard
+fi

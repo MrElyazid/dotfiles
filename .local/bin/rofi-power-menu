@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Options
+shutdown=" Shutdown"
+reboot=" Reboot"
+lock=" Lock"
+suspend=" Suspend"
+logout=" Logout"
+
+# Variable passed to rofi
+options="$shutdown\n$reboot\n$lock\n$suspend\n$logout"
+
+chosen="$(echo -e "$options" | rofi -dmenu -i -p "Power Menu")"
+
+case $chosen in
+    $shutdown)
+        systemctl poweroff
+        ;;
+    $reboot)
+        systemctl reboot
+        ;;
+    $lock)
+        i3lock # or your lock command
+        ;;
+    $suspend)
+        systemctl suspend
+        ;;
+    $logout)
+        i3-msg exit
+        ;;
+esac
