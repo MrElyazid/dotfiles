@@ -1,17 +1,73 @@
 [global]
-frame_color = "#89b4fa"
-separator_color= frame
-highlight = "#89b4fa"
+    #--- Display ---#
+    monitor = 0
+    follow = mouse
+    # geometry = width x height - right_offset + top_offset
+    geometry = "320x50-20+45"
+    indicate_hidden = yes
+    shrink = no
+    transparency = 10
+    notification_height = 0
+    separator_height = 2
+    padding = 12
+    horizontal_padding = 12
+    frame_width = 2
+
+    #--- Border/Frame ---#
+    frame_color = "#89b4fa"
+    separator_color = frame
+    corner_radius = 10
+
+    #--- Text ---#
+    font = SauceCodePro Nerd Font 10
+    line_height = 0
+    markup = full
+    # The format of the message. %s is summary, %b is body, %p is progress
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    show_age_threshold = 60
+    ellipsize = middle
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = yes
+
+    #--- Icons ---#
+    icon_position = left
+    min_icon_size = 0
+    max_icon_size = 48
+    icon_theme = Adwaita
+    #--- History ---#
+    sticky_history = yes
+    history_length = 20
+
+    #--- Mouse ---#
+    # left click: open url, middle click: close all, right click: close current
+    mouse_left_click = do_action, close_current
+    mouse_middle_click = close_all
+    mouse_right_click = close_current
 
 [urgency_low]
-background = "#1e1e2e"
-foreground = "#cdd6f4"
+    # Low priority: Grayish border, disappears quickly
+    background = "#1e1e2e"
+    foreground = "#a6adc8"
+    frame_color = "#a6adc8"
+    timeout = 4
 
 [urgency_normal]
-background = "#1e1e2e"
-foreground = "#cdd6f4"
+    # Normal priority: Blue border (Sapphire), standard timeout
+    background = "#1e1e2e"
+    foreground = "#cdd6f4"
+    frame_color = "#89b4fa"
+    timeout = 8
 
 [urgency_critical]
-background = "#1e1e2e"
-foreground = "#cdd6f4"
-frame_color = "#fab387"
+    # Critical priority: Peach/Orange border, stays longer
+    background = "#1e1e2e"
+    foreground = "#fab387"
+    frame_color = "#fab387"
+    timeout = 0
+    # timeout = 0 means it stays until clicked
+
+

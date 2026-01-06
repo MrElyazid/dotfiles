@@ -1,10 +1,7 @@
 if status is-interactive
     # Commands to run in interactive sessions can go here
-    fish_add_path ~/Applications/nodejs/bin
-    fish_add_path ~/Applications/bin
-    fish_add_path /usr/local/go/bin # go binaries
+    fnm env --use-on-cd | source # automatically change node version when entering a folder with .nvmrc
     fish_add_path $HOME/go/bin # go binaries
-    fish_add_path /opt/exercism/
 end
 
 
