@@ -1,31 +1,28 @@
 -- ~/.config/nvim/lua/core/plugins.lua
 
 return {
-	-- THEME
-	{
-		"folke/tokyonight.nvim",
-		lazy = false,
-		priority = 1000,
-		config = function()
-			-- load the colorscheme
-			vim.cmd.colorscheme("tokyonight-storm")
-		end,
-	},
-
 
 	-- FILE EXPLORER
 	{
 		"nvim-tree/nvim-tree.lua",
 		dependencies = "nvim-tree/nvim-web-devicons",
 		config = function()
-			require("nvim-tree").setup({
-				-- options here
-			})
+
+      require("nvim-tree").setup({
+        git = {
+          ignore = false, -- Set to false to show files listed in .gitignore
+        },
+        filters = {
+          dotfiles = false, -- Set to false to show files starting with .
+          git_ignored = false, -- good to be explicit
+        },
+      })
+
+
 			-- keymap to toggle the file explorer
 			vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
 		end,
 	},
-
 
 	-- STATUSLINE
 
@@ -35,7 +32,7 @@ return {
 		config = function()
 			require("lualine").setup({
 				options = {
-					theme = "tokyonight",
+					theme = "auto",
 				},
 			})
 			end,
@@ -67,6 +64,12 @@ return {
         "gopls",     -- Go
         "bashls",    -- Bash
         "lua_ls",    -- For our Neovim config
+        "html", -- for html
+        "cssls", -- for css
+        "ts_ls", -- for js/ts
+        "vue_ls", -- for vue
+        "emmet_ls", -- yay emmet!
+        "tinymist", -- for Typst 
       }
 
       local lspconfig = require("lspconfig")
@@ -110,6 +113,39 @@ return {
                   gofumpt = true, -- use gofumpt for formatting
                 },
               },
+            })
+          end,
+
+          -- setup for tinymist
+          ["tinymist"] = function()
+            lspconfig.tinymist.setup({
+              on_attach = on_attach,
+              capabilities = capabilities,
+              settings = {
+                formatterMode = "typstyle",
+                exportPdf = "onType",
+                semanticTokens = "disable"
+        },
+        })
+          end,
+
+
+
+          -- Custom setup for Emmet
+          ["emmet_ls"] = function()
+            lspconfig.emmet_ls.setup({
+              on_attach = on_attach,
+              capabilities = capabilities,
+              filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "vue" },
+            })
+          end,
+
+
+          -- Vue Specific Setup (UPDATED KEY: vue_ls)
+          ["vue_ls"] = function()
+            lspconfig.vue_ls.setup({
+              on_attach = on_attach,
+              capabilities = capabilities,
             })
           end,
         }
@@ -234,6 +270,11 @@ return {
           "json",
           "yaml",
           "markdown",
+          "html",
+          "css",
+          "javascript",
+          "typescript",
+          "vue",
         },
         highlight = {
           enable = true,
@@ -308,7 +349,6 @@ return {
       vim.g.copilot_filetypes = {
         ["*"] = true,
       }
-      
       -- Ctrl+y: Accept suggestion
       vim.keymap.set("i", "<C-y>", 'copilot#Accept("\\<CR>")', {
         expr = true,
@@ -316,19 +356,16 @@ return {
         silent = true,
         desc = "Accept Copilot suggestion",
       })
-      
       -- Ctrl+e: Dismiss suggestion  
       vim.keymap.set("i", "<C-e>", "<Plug>(copilot-dismiss)", {
         silent = true,
         desc = "Dismiss Copilot suggestion",
       })
-      
       -- Ctrl+x Ctrl+n: Next suggestion
       vim.keymap.set("i", "<C-x><C-n>", "<Plug>(copilot-next)", {
         silent = true,
         desc = "Next Copilot suggestion",
       })
-      
       -- Ctrl+x Ctrl+p: Previous suggestion
       vim.keymap.set("i", "<C-x><C-p>", "<Plug>(copilot-previous)", {
         silent = true,
@@ -360,6 +397,16 @@ return {
       { "<leader>xl", "<cmd>Trouble loclist toggle<cr>", desc = "Location List" },
       { "<leader>xq", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List" },
     },
+  },
+
+
+
+-- AUTO-CLOSE TAGS for HTML/Vue
+  {
+    "windwp/nvim-ts-autotag",
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
   },
 
 }
