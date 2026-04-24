@@ -1,412 +1,77 @@
--- ~/.config/nvim/lua/core/plugins.lua
+vim.pack.add({
+    -- icons
+    'https://github.com/nvim-tree/nvim-web-devicons',
+    -- file manager
+    'https://github.com/nvim-tree/nvim-tree.lua',
+    -- treesitter
+    'https://github.com/nvim-treesitter/nvim-treesitter',
+    -- comment.nvim
+    'https://github.com/numToStr/Comment.nvim',
+    -- fzf
+    'https://github.com/ibhagwan/fzf-lua',
+    -- which key
+    'https://github.com/folke/which-key.nvim',
+    -- mason for lsp
+    'https://github.com/mason-org/mason.nvim',
+    -- mason lsp config
+    'https://github.com/mason-org/mason-lspconfig.nvim',
+    -- nvim lsp-config
+    'https://github.com/neovim/nvim-lspconfig',
 
-return {
+})
 
-	-- FILE EXPLORER
-	{
-		"nvim-tree/nvim-tree.lua",
-		dependencies = "nvim-tree/nvim-web-devicons",
-		config = function()
 
-      require("nvim-tree").setup({
+
+require("nvim-tree").setup({
         git = {
           ignore = false, -- Set to false to show files listed in .gitignore
         },
         filters = {
           dotfiles = false, -- Set to false to show files starting with .
-          git_ignored = false, -- good to be explicit
         },
-      })
+})
 
+require("fzf-lua").setup({
 
-			-- keymap to toggle the file explorer
-			vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
-		end,
-	},
-
-	-- STATUSLINE
-
-	{
-		"nvim-lualine/lualine.nvim",
-		dependencies = {"nvim-tree/nvim-web-devicons" }, -- for icons in the status line
-		config = function()
-			require("lualine").setup({
-				options = {
-					theme = "auto",
-				},
-			})
-			end,
-	},
-
- -- LANGUAGE SERVER PROTOCOL
-  {
-    "williamboman/mason.nvim",
-    config = function()
-      require("mason").setup()
-    end,
+  files = {
+    prompt = "Files> ",
+    git_icons = true,
+    file_icons = true,
   },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
-    config = function()
-      -- This function gets called for every language server that is attached
-      local on_attach = function(client, bufnr)
-        local keymap = vim.keymap
-        -- Keymaps for LSP features
-        keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr, desc = "LSP Hover" })
-        keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to Definition" })
-        keymap.set("n", "gr", vim.lsp.buf.references, { buffer = bufnr, desc = "Go to References" })
-      end
-
-      -- List of servers to install
-      local servers = {
-        "pyright",   -- Python
-        "gopls",     -- Go
-        "bashls",    -- Bash
-        "lua_ls",    -- For our Neovim config
-        "html", -- for html
-        "cssls", -- for css
-        "ts_ls", -- for js/ts
-        "vue_ls", -- for vue
-        "emmet_ls", -- yay emmet!
-        "tinymist", -- for Typst 
-      }
-
-      local lspconfig = require("lspconfig")
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-      require("mason-lspconfig").setup({
-        ensure_installed = servers,
-        handlers = {
-          -- Default handler for servers without special config
-          function(server_name)
-            lspconfig[server_name].setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-            })
-          end,
-
-          -- Custom setup for Pyright
-          ["pyright"] = function()
-            lspconfig.pyright.setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-              settings = {
-                python = {
-                  analysis = {
-                    autoSearchPaths = true,
-                    diagnosticMode = "openFilesOnly",
-                    useLibraryCodeForTypes = true
-                  }
-                }
-              }
-            })
-          end,
-
-          -- Custom setup for Gopls
-          ["gopls"] = function()
-            lspconfig.gopls.setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-              settings = {
-                gopls = {
-                  gofumpt = true, -- use gofumpt for formatting
-                },
-              },
-            })
-          end,
-
-          -- setup for tinymist
-          ["tinymist"] = function()
-            lspconfig.tinymist.setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-              settings = {
-                formatterMode = "typstyle",
-                exportPdf = "onType",
-                semanticTokens = "disable"
-        },
-        })
-          end,
-
-
-
-          -- Custom setup for Emmet
-          ["emmet_ls"] = function()
-            lspconfig.emmet_ls.setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-              filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "vue" },
-            })
-          end,
-
-
-          -- Vue Specific Setup (UPDATED KEY: vue_ls)
-          ["vue_ls"] = function()
-            lspconfig.vue_ls.setup({
-              on_attach = on_attach,
-              capabilities = capabilities,
-            })
-          end,
-        }
-      })
-    end,
+  grep = {
+    prompt = "Rg> ",
+    input_prompt = "Grep For> ",
   },
 
-  -- AUTO-COMPLETION
-  {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp", -- Source for LSP
-      "hrsh7th/cmp-buffer",   -- Source for text in current buffer
-      "hrsh7th/cmp-path",     -- Source for file system paths
-      "L3MON4D3/LuaSnip",     -- Snippet engine
-      "saadparwaiz1/cmp_luasnip", -- Source for snippets
-    },
-    config = function()
-      local cmp = require("cmp")
-      local luasnip = require("luasnip")
-
-      -- Load custom VSCode-style snippets
-      require("luasnip.loaders.from_vscode").lazy_load({ paths = { vim.fn.stdpath("config") .. "/snippets" } })
-
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<CR>"] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                  if cmp.get_selected_entry() then
-                      cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }) -- Accept the selected item
-                  else
-                      fallback() -- Go to a new line if no entry is selected
-                  end
-              else
-                  fallback() -- Always fallback to default <CR> behavior
-              end
-          end, { "i", "s" }),
-
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-
-        }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "luasnip" },
-          { name = "buffer" },
-          { name = "path" },
-        }),
-      })
-
-      -- Integration with nvim-autopairs
-      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
-
-    end,
-  },
-
-  -- COMMENTING
-  {
-    "numToStr/Comment.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" }, -- Optional: for enhanced commenting with TS
-    config = function()
-      require("Comment").setup({
-       -- },
-      })
-
-      vim.keymap.set("n", "<leader>c", "<Plug>(comment_toggle_linewise_current)", { desc = "Toggle comment for current line" })
-      vim.keymap.set("v", "<leader>c", "<Plug>(comment_toggle_linewise_visual)", { desc = "Toggle comment for visual selection" })
-
-    end,
-  },
-
-  -- AUTO-PAIRS
-  {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    config = function()
-      require("nvim-autopairs").setup({
-      	disable_filetype = { "TelescopePrompt", "vim" }, -- Disable in specific filetypes
- 		check_ts = false, -- Use treesitter to check for proper syntax (optional)
- 		fast_wrap = {}, -- Enable fast wrapping using a shortcut
-      })
-    end,
-  },
-
-  -- TREESITTER
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    dependencies = {
-      "HiPhish/rainbow-delimiters.nvim", -- Colorize matching brackets
-    },
-    config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "python",
-          "go",
-          "bash",
-          "lua",
-          "json",
-          "yaml",
-          "markdown",
-          "html",
-          "css",
-          "javascript",
-          "typescript",
-          "vue",
-        },
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = false,
-        },
-        indent = {
-          enable = true,
-        },
-      })
-
-      -- Rainbow delimiters setup
-      local rainbow_delimiters = require("rainbow-delimiters")
-      require("rainbow-delimiters.setup").setup({
-        strategy = {
-          [''] = rainbow_delimiters.strategy['global'],
-          vim = rainbow_delimiters.strategy['local'],
-        },
-        query = {
-          [''] = 'rainbow-delimiters',
-          lua = 'rainbow-blocks',
-        },
-        highlight = {
-          'RainbowDelimiterRed',
-          'RainbowDelimiterYellow',
-          'RainbowDelimiterBlue',
-          'RainbowDelimiterOrange',
-          'RainbowDelimiterGreen',
-          'RainbowDelimiterViolet',
-          'RainbowDelimiterCyan',
-        },
-      })
-    end,
-  },
-
-  -- TELESCOPE (Fuzzy Finder)
-  {
-    "nvim-telescope/telescope.nvim",
-    tag = "0.1.8",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("telescope").setup({
-        defaults = {
-          -- Default configuration for telescope goes here
-          mappings = {
-            i = {
-              -- Insert mode mappings
-              ["<C-u>"] = false,
-              ["<C-d>"] = false,
-            },
-          },
-        },
-      })
-
-      -- Keymaps for Telescope
-      local builtin = require("telescope.builtin")
-      vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
-      vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Live grep" })
-      vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find buffers" })
-      vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Find help" })
-      vim.keymap.set("n", "<leader>fr", builtin.oldfiles, { desc = "Find recent files" })
-    end,
-  },
-
-  -- GITHUB COPILOT
-  {
-    "github/copilot.vim",
-    lazy = false,
-    config = function()
-      -- Disable default Tab mapping
-      vim.g.copilot_no_tab_map = true
-      vim.g.copilot_assume_mapped = true
-      vim.g.copilot_filetypes = {
-        ["*"] = true,
-      }
-      -- Ctrl+y: Accept suggestion
-      vim.keymap.set("i", "<C-y>", 'copilot#Accept("\\<CR>")', {
-        expr = true,
-        replace_keycodes = false,
-        silent = true,
-        desc = "Accept Copilot suggestion",
-      })
-      -- Ctrl+e: Dismiss suggestion  
-      vim.keymap.set("i", "<C-e>", "<Plug>(copilot-dismiss)", {
-        silent = true,
-        desc = "Dismiss Copilot suggestion",
-      })
-      -- Ctrl+x Ctrl+n: Next suggestion
-      vim.keymap.set("i", "<C-x><C-n>", "<Plug>(copilot-next)", {
-        silent = true,
-        desc = "Next Copilot suggestion",
-      })
-      -- Ctrl+x Ctrl+p: Previous suggestion
-      vim.keymap.set("i", "<C-x><C-p>", "<Plug>(copilot-previous)", {
-        silent = true,
-        desc = "Previous Copilot suggestion",
-      })
-    end,
-  },
-
-  -- WHICH-KEY
-  {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("which-key").setup({})
-    end,
-  },
-
-  -- TROUBLE
-  {
-    "folke/trouble.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    cmd = "Trouble",
-    config = function()
-      require("trouble").setup({})
-    end,
-    keys = {
-      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
-      { "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics" },
-      { "<leader>xl", "<cmd>Trouble loclist toggle<cr>", desc = "Location List" },
-      { "<leader>xq", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List" },
-    },
-  },
+  winopts = {
+    border = "rounded",
+    preview={default="bat"},
+  }
+})
 
 
 
--- AUTO-CLOSE TAGS for HTML/Vue
-  {
-    "windwp/nvim-ts-autotag",
-    config = function()
-      require("nvim-ts-autotag").setup()
-    end,
-  },
 
-}
+
+-- i wanted to add this to keymaps.lua but it gives an error, the require doesnt resolve idk why
+
+local fzf = require('fzf-lua')
+
+-- Find files using <leader>ff
+vim.keymap.set('n', '<leader>ff', fzf.files, { desc = 'Fzf files' })
+-- Live grep
+vim.keymap.set('n', '<leader>fg', fzf.live_grep, { desc = 'Fzf live grep' })
+-- Open buffers
+vim.keymap.set('n', '<leader>fb', fzf.buffers, { desc = 'Fzf buffers' })
+-- Help tags
+vim.keymap.set('n', '<leader>fh', fzf.help_tags, { desc = 'Fzf help tags' })
+-- Recent files
+vim.keymap.set('n', '<leader>fo', fzf.oldfiles, { desc = 'Fzf old files' })
+
+
+-- Mason setup
+require("mason").setup()
+
+require("mason-lspconfig").setup({
+  automatic_enable = true,
+})
