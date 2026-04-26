@@ -38,6 +38,23 @@ vim.api.nvim_create_autocmd("FileType", {
 
 
 
+-- check file on disk to autoread it
+
+-- Auto-read: Check for file changes when the window gains focus
+vim.api.nvim_create_autocmd("FocusGained", {
+  command = "checktime",
+  pattern = "*",
+})
+
+-- Optional: Also check when you stop typing for a while (CursorHold)
+vim.api.nvim_create_autocmd("CursorHold", {
+  command = "checktime",
+  pattern = "*",
+})
+
+
+
+
 -- lsp attachement :
 
 vim.opt.completeopt = "menu,menuone,noselect,popup" -- Ensures the menu appears even for a single match and uses the native popup window.
