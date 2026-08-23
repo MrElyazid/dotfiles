@@ -58,6 +58,10 @@ tiling_drag modifier titlebar
 # start a terminal
 bindsym $mod+Return exec alacritty
 
+# holy one liner for renaming workspaces
+bindsym $mod+n exec i3-input -F "rename workspace to \"$(i3-msg -t get_workspaces | jq -r 'map(select(.focused))[0].num'):%s\"" -P 'New name: '
+
+
 # kill focused window
 bindsym $mod+Shift+a kill
 
@@ -73,7 +77,6 @@ bindsym $mod+d exec rofi -show drun -show-icons
 
 # translation
 bindsym $mod+t exec xdg-open "https://translate.google.com/?sl=auto&tl=en&text=$(xsel -o)"
-
 
 
 # show all open windows and workspaces with rofi
@@ -141,6 +144,22 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
+
+
+
+
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+10 workspace number 10
+
+
 
 # switch to workspace
 bindsym $mod+ampersand workspace number $ws1

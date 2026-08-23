@@ -22,6 +22,8 @@ alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
+set --export MANPAGER "nvim +Man!"
+
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/elyazid/google-cloud-sdk/path.fish.inc' ]; . '/home/elyazid/google-cloud-sdk/path.fish.inc'; end

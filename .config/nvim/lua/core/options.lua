@@ -10,13 +10,13 @@ vim.cmd.colorscheme("unokai")
 local opt = vim.opt -- for concisness
 
 -- Line numbers
-opt.relativenumber = true
+-- opt.relativenumber = true
 opt.number = true
 
 
 -- file behaviour
 opt.swapfile = false
-opt.autoread = true 
+opt.autoread = true
 opt.undofile = true -- Persistent undo
 opt.undolevels = 10000
 
