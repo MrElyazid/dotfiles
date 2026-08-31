@@ -14,9 +14,13 @@ local opt = vim.opt -- for concisness
 opt.number = true
 
 
+-- lsp attachement :
+
+vim.opt.completeopt = "menu,menuone,noselect,popup" -- Ensures the menu appears even for a single match and uses the native popup window.
+vim.o.autocomplete = true -- Enables the overall completion feature.
+
 -- file behaviour
 opt.swapfile = false
-opt.autoread = true
 opt.undofile = true -- Persistent undo
 opt.undolevels = 10000
 
@@ -25,7 +29,6 @@ opt.undolevels = 10000
 opt.tabstop = 4
 opt.shiftwidth = 4
 opt.expandtab = true
-opt.autoindent = true
 opt.smartindent = true
 
 
@@ -36,7 +39,6 @@ opt.smartcase = true -- case sensitive if word is uppercase
 
 -- Appearance
 opt.termguicolors = true
-opt.background = "dark"
 opt.signcolumn = "yes"
 opt.showmode = false
 

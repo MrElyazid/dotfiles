@@ -1,8 +1,34 @@
-[terminal.shell]
-program = "/usr/bin/fish"
-# start fish as a login shell
-args = ["--login"]
+# On a new pc :
 
+## For nvim :
+
+### Arch :
+
+- Install : `curl git neovim fzf bat ripgrep unzip gcc xclip`
+- launch nvim and install the needed lsp servers with `Mason`, install parsers with `TSInstall language`
+
+### Debian based :
+
+- install same deps as Arch but for nvim get the latest appimage or tarball from: https://github.com/neovim/neovim/releases
+- install lsps with `Mason`, parsers with `TSInstall`
+
+## WSL stuff :
+
+- Install Alacritty and a nerdfont using scoop :
+    - Alacritty :
+    ```
+    scoop bucket add extras
+    scoop install extras/alacritty
+    ```
+    - SauceCodePro :
+    ```
+    scoop bucket add nerd-fonts
+    scoop install nerd-fonts/SourceCodePro-NF-Mono
+    ```
+
+- paste this to `C:\Users\<something>\AppData\Roaming\alacritty\alacritty.toml` :
+
+```toml
 [font]
 size = 13.0
 
@@ -62,3 +88,6 @@ magenta = '#d39fff'
 cyan    = '#9af0ff'
 white   = '#c8cde7'
 
+[terminal]
+shell = { program = "wsl", args = ["-d", "Ubuntu", "--cd", "~"] }
+```

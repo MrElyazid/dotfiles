@@ -50,25 +50,6 @@ require("fzf-lua").setup({
 })
 
 
-
-
-
--- i wanted to add this to keymaps.lua but it gives an error, the require doesnt resolve idk why
-
-local fzf = require('fzf-lua')
-
--- Find files using <leader>ff
-vim.keymap.set('n', '<leader>ff', fzf.files, { desc = 'Fzf files' })
--- Live grep
-vim.keymap.set('n', '<leader>fg', fzf.live_grep, { desc = 'Fzf live grep' })
--- Open buffers
-vim.keymap.set('n', '<leader>fb', fzf.buffers, { desc = 'Fzf buffers' })
--- Help tags
-vim.keymap.set('n', '<leader>fh', fzf.help_tags, { desc = 'Fzf help tags' })
--- Recent files
-vim.keymap.set('n', '<leader>fo', fzf.oldfiles, { desc = 'Fzf old files' })
-
-
 -- Mason setup
 require("mason").setup()
 

@@ -13,11 +13,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     -- LSP keymaps (buffer-local)
     local opts = { buffer = bufnr }
+    -- this is available through CTRL-] but its akward on azerty
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+
+
+
+    -- Inline param names / types
+    vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+
   end,
 })
 

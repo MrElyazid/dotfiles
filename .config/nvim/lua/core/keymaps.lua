@@ -2,7 +2,6 @@
 
 local keymap = vim.keymap
 
-
 -- window navigation
 keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move to left window"  })
 keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move to lower window" })
@@ -47,3 +46,12 @@ keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle file explor
 -- comment.nvim
 keymap.set("n", "<leader>c", "<Plug>(comment_toggle_linewise_current)", { desc = "Toggle comment for current line" })
 keymap.set("v", "<leader>c", "<Plug>(comment_toggle_linewise_visual)", { desc = "Toggle comment for visual selection" })
+
+-- fzf-lua (lazy require: works regardless of load order)
+vim.keymap.set('n', '<leader>ff', function() require('fzf-lua').files() end, { desc = 'Fzf files' })
+vim.keymap.set('n', '<leader>fg', function() require('fzf-lua').live_grep() end, { desc = 'Fzf live grep' })
+vim.keymap.set('n', '<leader>fb', function() require('fzf-lua').buffers() end, { desc = 'Fzf buffers' })
+vim.keymap.set('n', '<leader>fh', function() require('fzf-lua').help_tags() end, { desc = 'Fzf help tags' })
+vim.keymap.set('n', '<leader>fo', function() require('fzf-lua').oldfiles() end, { desc = 'Fzf old files' })
+
+vim.keymap.set('n', '<leader>ld', function() require('fzf-lua').lsp_definitions() end, { desc = 'Peek definitions' })
