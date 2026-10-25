@@ -88,6 +88,9 @@ magenta = '#d39fff'
 cyan    = '#9af0ff'
 white   = '#c8cde7'
 
+[keyboard]
+bindings = [{ key = "Space", mods = "Control", chars = "\u0000" }]
+
 [terminal]
 shell = { program = "wsl", args = ["-d", "Ubuntu", "--cd", "~"] }
 ```
