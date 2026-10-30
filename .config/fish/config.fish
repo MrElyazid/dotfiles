@@ -3,6 +3,7 @@ if status is-interactive
     fnm env --use-on-cd | source # automatically change node version when entering a folder with .nvmrc
     fish_add_path $HOME/go/bin # go binaries
     fish_add_path $HOME/.local/bin/exercism # exercism cli
+    fish_add_path /opt/wrtag/
 end
 
 set -g fish_greeting
@@ -11,6 +12,7 @@ set -x BROWSER firefox
 set -x EDITOR nvim
 set -x VISUAL nvim
 set -x GOPATH $HOME/go
+
 
 
 fish_default_key_bindings

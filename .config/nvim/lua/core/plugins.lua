@@ -17,7 +17,6 @@ vim.pack.add({
     'https://github.com/mason-org/mason-lspconfig.nvim',
     -- nvim lsp-config
     'https://github.com/neovim/nvim-lspconfig',
-
 })
 
 
@@ -54,5 +53,13 @@ require("fzf-lua").setup({
 require("mason").setup()
 
 require("mason-lspconfig").setup({
-  automatic_enable = true,
+  automatic_enable = {
+    "bashls",
+    "basedpyright",
+    "docker_language_server",
+    "gopls",
+    "jdtls",
+    "lua_ls",
+    "tinymist",
+  },
 })

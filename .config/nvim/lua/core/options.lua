@@ -17,6 +17,7 @@ opt.number = true
 -- lsp attachement :
 
 vim.opt.completeopt = "menu,menuone,noselect,popup" -- Ensures the menu appears even for a single match and uses the native popup window.
+opt.complete:append("o") -- Include LSP (omnifunc) in the as-you-type completion menu.
 vim.o.autocomplete = true -- Enables the overall completion feature.
 
 -- file behaviour

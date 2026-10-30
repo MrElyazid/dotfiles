@@ -1,3 +1,13 @@
+-- Docker Compose files: give them the filetype the Docker LSP expects.
+vim.filetype.add({
+  filename = {
+    ["docker-compose.yml"] = "yaml.docker-compose",
+    ["docker-compose.yaml"] = "yaml.docker-compose",
+    ["compose.yml"] = "yaml.docker-compose",
+    ["compose.yaml"] = "yaml.docker-compose",
+  },
+})
+
 -- Language-specific indentation
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "python",
